@@ -12,7 +12,7 @@ export const Role: GuardFunction<
     | SimpleCommandMessage
 > = async (arg, client, next) => {
 
-    const hasRoleElite = arg instanceof ChatInputCommandInteraction ? arg.member.roles.cache.has("1115357708820942971"): null
+    const hasRoleElite = arg instanceof ChatInputCommandInteraction ? arg.member.roles.cache.has("1110994762695196892"): null
 
     if(hasRoleElite) return next()
     else {
