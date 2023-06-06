@@ -171,17 +171,7 @@ type RootTranslation = {
 			 */
 			MESSAGE: RequiredParams<'heartbeat' | 'member' | 'time'>
 		}
-		KEYWORD: {
-			/**
-			 * K​E​Y​W​O​R​D​!
-			 */
-			DESCRIPTION: string
-			/**
-			 * {​k​e​y​w​o​r​d​}
-			 * @param {string} keyword
-			 */
-			MESSAGE: RequiredParams<'keyword'>
-		}
+
 	}
 }
 
@@ -333,16 +323,7 @@ export type TranslationFunctions = {
 			 */
 			MESSAGE: (arg: { heartbeat: string, member: string, time: number }) => LocalizedString
 		}
-		KEYWORD: {
-			/**
-			 * KEYWORD!
-			 */
-			DESCRIPTION: () => LocalizedString
-			/**
-			 * {keyword}
-			 */
-			MESSAGE: (arg: { keyword: string }) => LocalizedString
-		}
+
 	}
 }
 

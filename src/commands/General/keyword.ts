@@ -41,11 +41,11 @@ export default class KeyCommand {
         const keywords : string = await this.keyword.getKeywordFromListing(url)
 
 
-        const content = localize["COMMANDS"]["KEYWORD"]["MESSAGE"]({
+        const content = {
             keyword: keywords
-        })
+        };
 
-        await msg.edit(content)
+        await msg.edit({ content: JSON.stringify(content) });
     }
 
 
