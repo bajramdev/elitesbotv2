@@ -5,7 +5,7 @@ import {Client, Guard} from "discordx"
 
 import {Discord, Slash, SlashOption} from "@decorators"
 
-import { Keyword } from "@services"
+import {Keyword} from "@services"
 import {injectable} from "tsyringe";
 import {Role} from "@guards";
 import {ApplicationCommandOptionType, User} from "discord.js";
@@ -37,16 +37,17 @@ export default class KeyCommand {
 
         const msg = (await interaction.followUp({ content: "Fetching keywords...", fetchReply: true })) as Message
 
-        // @ts-ignore
-        const keywords : string = await this.keyword.getKeywordFromListing(url)
+        const keywords : string | undefined = await this.keyword.getKeywordFromListing(url)
 
 
-        const content = {
-            keyword: keywords
-        };
-
-        await msg.edit({ content: JSON.stringify(content) });
+        if (keywords) {
+            const content = { keyword: keywords };
+            await msg.edit({ content: JSON.stringify(content) });
+        } else {
+            await msg.edit({ content: "Unable to fetch keywords." });
+        }
     }
+
 
 
     getEmbed(author: User, link: string): EmbedBuilder {

@@ -1,14 +1,17 @@
 import axios from "axios";
 import cheerio from "cheerio";
-import { singleton } from "tsyringe";
+import {singleton} from "tsyringe";
 
-import {Database, Logger} from "@services"
-
-import { isValidUrl } from "@utils/functions";
-import {Image} from "@entities";
+import {Logger} from "@services"
 
 @singleton()
 export class Keyword {
+
+    constructor(
+        private logger: Logger
+    ) {
+    }
+
     isValidEtsyListing = (url: string): boolean => {
         try {
             const etsyListingRegex = /^https?:\/\/(?:www\.)?etsy\.com\/[a-z]{2}-[a-z]{2}\/listing\/\d+\/.+/i;
@@ -18,8 +21,9 @@ export class Keyword {
         }
     };
 
-    getKeywordFromListing = async (url: string): Promise<void> => {
-        if (this.isValidEtsyListing(url)) {
+
+    getKeywordFromListing = async (url: string): Promise<string | undefined> => {
+       // if (this.isValidEtsyListing(url)) {
             try {
 
                 console.log(url)
@@ -43,25 +47,33 @@ export class Keyword {
 
                 const htmlContent = element.html();
 
-                console.log(htmlContent)
-
                 if (htmlContent) {
                     const regex = /<script\s+type="text\/json"\s+data-neu-spec-placeholder-data="1">(.*?)<\/script>/s;
                     const match = regex.exec(htmlContent);
                     if (match) {
                         const jsonData = JSON.parse(match[1]);
-                        const listingTags = jsonData.args.listing_tags;
-                        console.log("tags" , listingTags)
-                        return listingTags;
+                        return jsonData.args.listing_tags;
                     } else {
-                        console.log("JSON data not found.");
+                        this.logger.log(
+                            `JSON Data not found `,
+                            'error',
+                            true
+                        )
                     }
                 } else {
-                    console.log("HTML content not found.");
+                    this.logger.log(
+                        `HTML Content not found  ${htmlContent} to URL: ${url} `,
+                        'error',
+                        true
+                    )
+
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                this.logger.log(error?.toString(), 'error', true)
             }
-        }
+      //  }
+
+        return undefined;
+
     };
 }
