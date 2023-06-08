@@ -171,7 +171,6 @@ type RootTranslation = {
 			 */
 			MESSAGE: RequiredParams<'heartbeat' | 'member' | 'time'>
 		}
-
 	}
 }
 
@@ -323,7 +322,6 @@ export type TranslationFunctions = {
 			 */
 			MESSAGE: (arg: { heartbeat: string, member: string, time: number }) => LocalizedString
 		}
-
 	}
 }
 
