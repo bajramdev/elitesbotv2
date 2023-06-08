@@ -22,6 +22,8 @@ export class Keyword {
     };
 
 
+
+
     getKeywordFromListing = async (url: string): Promise<string | undefined> => {
        // if (this.isValidEtsyListing(url)) {
             try {
@@ -66,6 +68,7 @@ export class Keyword {
                         'error',
                         true
                     )
+
 
                 }
             } catch (error: any) {
