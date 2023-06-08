@@ -1,5 +1,5 @@
 import {Category, PermissionGuard} from "@discordx/utilities"
-import {CommandInteraction, EmbedBuilder, Message} from "discord.js"
+import {CommandInteraction, EmbedBuilder, EmbedField, Message} from "discord.js"
 import {Client, Guard} from "discordx"
 
 
@@ -11,6 +11,7 @@ import {Role} from "@guards";
 import {ApplicationCommandOptionType, User} from "discord.js";
 import {getColor} from "@utils/functions";
 import {generalConfig} from "@configs";
+import packageJson from "../../../package.json";
 
 
 @Discord()
@@ -35,30 +36,41 @@ export default class KeyCommand {
         { localize }: InteractionData
     ) {
 
-        const msg = (await interaction.followUp({ content: "Fetching keywords...", fetchReply: true })) as Message
+        try {
 
-        const keywords : string | undefined = await this.keyword.getKeywordFromListing(url)
+            const keywords: string | undefined = await this.keyword.getKeywordFromListing(url);
+            const formattedKeywords: string = keywords ? formatKeywords(keywords) : '';
 
+            function formatKeywords(keywords: string): string {
+                // @ts-ignore
+                return keywords.join('\n');
+            }
+
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: interaction.user.username,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle("Keywords")
+            .setThumbnail(client.user!.displayAvatarURL())
+            .setColor(getColor('primary'))
+            .setDescription(formattedKeywords || 'Unable to fetch keywords')
 
         if (keywords) {
-            const content = { keyword: keywords };
-            await msg.edit({ content: JSON.stringify(content) });
-        } else {
-            await msg.edit({ content: "Unable to fetch keywords." });
-        }
-    }
-
-
-
-    getEmbed(author: User, link: string): EmbedBuilder {
-
-        return new EmbedBuilder()
-            .setAuthor({
-                name: author.username,
-                iconURL: author.displayAvatarURL({ forceStatic: false })
+            await interaction.followUp({
+                embeds: [embed],
+                ephemeral: true
             })
-            .setColor(getColor('primary'))
-            .setImage(link)
+
+
+            //await msg.reply({ content: JSON.stringify(content) });
+        } else {
+           await interaction.reply({ content: "Unable to fetch keywords.", ephemeral: true });
+        }
+        } catch (e) {
+            console.log(e)
+        }
     }
 
 }
